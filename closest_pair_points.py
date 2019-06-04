@@ -1,5 +1,6 @@
 import sys
 import pygame
+import math
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -26,6 +27,84 @@ def text_block(background, message, color, size, coordinate_x, coordinate_y):
     text = font.render(message, True, color)
     background.blit(text, [coordinate_x, coordinate_y])
 
+
+def distance_two_points(point_a, point_b):
+    """
+    Calculate distance of two points.
+    """
+    distance = math.sqrt(pow((point_a.pos_x - point_b.pos_x), 2) + pow((point_a.pos_y - point_b.pos_y), 2))
+    return distance
+
+def merge_sort_axis_x(points):
+    """
+    Sort points by axis x values.
+    """
+    if len(points) > 1:
+        mid = len(points) // 2  # Finding the mid of the array
+        L = points[:mid] # Divinding the array elements
+        R = points[mid:] # into 2 halves
+  
+        merge_sort_axis_x(L) # Sorting the first half
+        merge_sort_axis_x(R) # Sorting the second half
+  
+        i = j = k = 0
+        
+        # Copy data to temp arrays L[] and R[]
+        while i < len(L) and j < len(R): 
+            if L[i].pos_x < R[j].pos_x: 
+                points[k] = L[i]
+                i += 1
+            else: 
+                points[k] = R[j]
+                j += 1
+            k += 1
+        
+        # Checking if any elements was left
+        while i < len(L):
+            points[k] = L[i]
+            i += 1
+            k += 1
+          
+        while j < len(R):
+            points[k] = R[j]
+            j += 1
+            k += 1
+
+
+def merge_sort_axis_y(points):
+    """
+    Sort points by axis y values.
+    """
+    if len(points) > 1:
+        mid = len(points) // 2 # Finding the mid of the array
+        L = points[:mid] # Dividing the array elements
+        R = points[mid:] # into 2 halves
+  
+        merge_sort_axis_y(L) # Sorting the first half
+        merge_sort_axis_y(R) # Sorting the second half
+  
+        i = j = k = 0
+        
+        # Copy data to temp arrays L[] and R[]
+        while i < len(L) and j < len(R): 
+            if L[i].pos_y < R[j].pos_y: 
+                points[k] = L[i] 
+                i += 1
+            else: 
+                points[k] = R[j] 
+                j += 1
+            k += 1
+        
+        # Checking if any element was left
+        while i < len(L): 
+            points[k] = L[i] 
+            i += 1
+            k += 1
+          
+        while j < len(R): 
+            points[k] = R[j] 
+            j += 1
+            k += 1
 
 class Point():
     """
@@ -157,10 +236,12 @@ class Game():
                         self.start = False
                         self.run()
                     if event.key == pygame.K_c:
+                        merge_sort_axis_x(self.points.set_points)
+                            
                         # RUN ALGORITHM CLOSEST PAIR OF POINTS,
                         # PINTAR DE VERDE OS DOIS PONTOS E DESENHAR UMA LINHA ENTRE ELES,
                         # PRINTAR NA TELA AS COORDENADAS DO PAR MAIS PROXIMO
-                        # msg: Closest Pair of Points = (532, 540) and (877, 544)
+                        # msg: Closest Pair of Points = (532, 540) and (877, 544) / Distance = 1.4444
                         self.solved = True
                 if not self.solved and event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
