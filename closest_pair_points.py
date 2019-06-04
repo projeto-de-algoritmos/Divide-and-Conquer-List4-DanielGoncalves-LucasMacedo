@@ -29,13 +29,27 @@ def text(background, message, color, size, coordinate_x, coordinate_y):
 
 
 class Point():
-    def __init__(self, pos_x, pos_y, color):
-        self.pos_x = pos_x
-        self.pos_y = pos_y
+    def __init__(self, pos, color):
+        self.pos = pos
+        self.pos_x = pos[0]
+        self.pos_y = pos[1]
         self.color = color
 
-    # def render(self, background):
-        # pygame.draw.pygame.draw.circle(Surface, color, pos, radius, width=0)
+    def render(self, background):
+        pygame.draw.circle(background, self.color, self.pos, 8)
+
+
+class Algorithm():
+    def __init__(self):
+        self.points = []
+
+    def append_point(self, point):
+        self.points.append(point)
+
+    def render(self, background):
+        for point in self.points:
+            point.render(background)
+
 
 class Game():
     def __init__(self):
@@ -51,6 +65,8 @@ class Game():
         self.background = pygame.display.set_mode(SCREEN_SIZE)
         pygame.display.set_caption('Closest Pair of Points')
 
+        self.algorithm = Algorithm()
+
     def initial_game(self):
 
         self.background.fill(DARKBLUE)
@@ -65,6 +81,8 @@ class Game():
 
     def render(self):
         self.background.fill(BLACK)
+
+        self.algorithm.render(self.background)
 
         text(self.background, "CLICK TO CREATE POINTS",
                 WHITE, 20, 380, 10)
@@ -108,6 +126,11 @@ class Game():
                     if event.key == pygame.K_c:
                         self.background.fill(BLACK)
                         # RUN ALGORITHM
+                if event.type == pygame.MOUSEBUTTONUP:
+                    pos = pygame.mouse.get_pos()
+                    print(pos)
+                    point = Point(pos, RED)
+                    self.algorithm.append_point(point)
             self.render()
 
         pygame.quit()
