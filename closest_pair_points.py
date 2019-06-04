@@ -20,9 +20,8 @@ SCREEN_SIZE = (WIDTH, HEIGHT)
 
 def text_block(background, message, color, size, coordinate_x, coordinate_y):
     """
-    Create block of text.
+    Create block of text on the screen.
     """
-
     font = pygame.font.SysFont(None, size)
     text = font.render(message, True, color)
     background.blit(text, [coordinate_x, coordinate_y])
@@ -43,29 +42,35 @@ class Point():
         """
         Render points on the screen.
         """
-    
         pygame.draw.circle(background, self.color, self.pos, 8)
 
 
-class Algorithm():
+class Points():
     """
-    Class to Algorithm Closest Pair of Points.
+    Class to set of points.
     """
 
     def __init__(self):
-        self.points = []
+        self.set_points = []
+        self.set_points_positions = []
 
     def append_point(self, point):
         """
         Append created point to list of points.
         """
-        self.points.append(point)
+        if ([point.pos_x, point.pos_y] not in self.set_points_positions):
+            self.set_points.append(point)
+            self.set_points_positions.append([point.pos_x, point.pos_y])
+        # DEBUG
+        for point in self.set_points:
+            print(point.pos_x)
+            print(point.pos_y)
 
     def render(self, background):
         """
         Render list of points created.
         """
-        for point in self.points:
+        for point in self.set_points:
             point.render(background)
 
 
@@ -82,6 +87,7 @@ class Game():
 
         self.start = False
         self.exit = False
+        self.solved = False
 
     def load(self):
         """
@@ -90,7 +96,7 @@ class Game():
         self.background = pygame.display.set_mode(SCREEN_SIZE)
         pygame.display.set_caption('Closest Pair of Points')
 
-        self.algorithm = Algorithm()
+        self.points = Points()
 
     def initial_game(self):
         """
@@ -112,7 +118,7 @@ class Game():
         """
         self.background.fill(BLACK)
 
-        self.algorithm.render(self.background)
+        self.points.render(self.background)
 
         text_block(self.background, "CLICK TO CREATE POINTS", WHITE, 20, 380, 10)
         text_block(self.background, "PRESS (R) TO RETRY", WHITE, 20, 80, 630)
@@ -125,11 +131,9 @@ class Game():
         """
         Method with loop to run game.
         """
-
         self.load()
 
         while not self.start:
-
             self.initial_game()
 
             if pygame.event.get(pygame.QUIT) or pygame.key.get_pressed()[
@@ -152,13 +156,17 @@ class Game():
                     if event.key == pygame.K_r:
                         self.start = False
                         self.run()
-                    # if event.key == pygame.K_c:
-                        # RUN ALGORITHM CLOSEST PAIR OF POINTS
-                if event.type == pygame.MOUSEBUTTONUP:
+                    if event.key == pygame.K_c:
+                        # RUN ALGORITHM CLOSEST PAIR OF POINTS,
+                        # PINTAR DE VERDE OS DOIS PONTOS E DESENHAR UMA LINHA ENTRE ELES,
+                        # PRINTAR NA TELA AS COORDENADAS DO PAR MAIS PROXIMO
+                        # msg: Closest Pair of Points = (532, 540) and (877, 544)
+                        self.solved = True
+                if not self.solved and event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
                     print(pos)
                     point = Point(pos, RED)
-                    self.algorithm.append_point(point)
+                    self.points.append_point(point)
             self.render()
 
         pygame.quit()
@@ -168,12 +176,14 @@ def main():
     """
     Main method.
     """
-
     mygame = Game()
     mygame.run()
 
 
 if __name__ == '__main__':
+    """
+    Call main method.
+    """
     try:
         main()
     except KeyboardInterrupt:
