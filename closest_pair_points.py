@@ -221,7 +221,7 @@ class Game():
 
     def founded(self):
         """
-        Method to show closest pair of points.
+        Method to change color of closest pair of points.
         """
         self.closest_pair[0].color = GREEN
         self.closest_pair[1].color = GREEN
@@ -279,12 +279,12 @@ class Game():
                     if event.key == pygame.K_c and len(self.points.set_points) > 1 and not self.solved:
                         # closest_pair = closest_pair_of_points(self.points.set_points)
                         self.closest_pair = brute_force(self.points.set_points)
+                        # Debug
                         print("ANSWER")
                         print(self.closest_pair[0].pos)
                         print(self.closest_pair[1].pos)
-                        
-                        self.founded()
 
+                        self.founded()
                         self.solved = True
                 if not self.solved and event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
