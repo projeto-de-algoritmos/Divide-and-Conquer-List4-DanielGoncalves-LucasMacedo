@@ -106,6 +106,34 @@ def merge_sort_axis_y(points):
             j += 1
             k += 1
 
+def brute_force(points):
+    """
+    Algorithm brute force to find closest pair of points.
+    """
+    min = sys.float_info.max
+    closest_pair = ()
+    for i in range(0, len(points)):
+        for j in range(i + 1, len(points)):
+            if distance_two_points(points[i], points[j]) < min:
+                min = distance_two_points(points[i], points[j])
+                closest_pair = (points[i], points[j])
+    return closest_pair
+
+def closest_pair_of_points(points):
+    """
+    Algorithm divide and conquer closest pair of points.
+    """
+    merge_sort_axis_x(points)
+    
+    mid = len(points) // 2 # Finding the mid of the array
+    L = points[:mid] # Dividing the array elements
+    R = points[mid:] # into 2 halves
+
+
+
+    # closest_pair = (point1, point2)
+    # return closest_pair
+
 class Point():
     """
     Class to each point.
@@ -142,8 +170,7 @@ class Points():
             self.set_points_positions.append([point.pos_x, point.pos_y])
         # DEBUG
         for point in self.set_points:
-            print(point.pos_x)
-            print(point.pos_y)
+            print(point.pos)
 
     def render(self, background):
         """
@@ -167,6 +194,7 @@ class Game():
         self.start = False
         self.exit = False
         self.solved = False
+        self.closest_pair = ()
 
     def load(self):
         """
@@ -191,6 +219,13 @@ class Game():
         text_block(self.background, "PRESS (S) TO START", INTERMEDIARYORANGE, 50, 290, 320)
         text_block(self.background, "PRESS (ESC) TO CLOSE", INTERMEDIARYORANGE, 50, 270, 360)
 
+    def founded(self):
+        """
+        Method to show closest pair of points.
+        """
+        self.closest_pair[0].color = GREEN
+        self.closest_pair[1].color = GREEN
+
     def render(self):
         """
         Render elements on the screen.
@@ -204,6 +239,11 @@ class Game():
         text_block(self.background, "PRESS (C) TO RUN ALGORITHM", WHITE, 20, 380, 630)
         text_block(self.background, "PRESS (ESC) TO CLOSE", WHITE, 20, 700, 630)
 
+        if self.solved:
+            pygame.draw.line(self.background, GREEN, self.closest_pair[0].pos, self.closest_pair[1].pos)
+            text_block(self.background, "Closest Pair of Points " + str(self.closest_pair[0].pos) + " " + str(self.closest_pair[1].pos), WHITE, 25, 310, 30)
+            text_block(self.background, "Distance " + str(distance_two_points(self.closest_pair[0], self.closest_pair[1])), WHITE, 25, 360, 50)
+        
         pygame.display.update()
 
     def run(self):
@@ -234,17 +274,21 @@ class Game():
                 if event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_r:
                         self.start = False
+                        self.solved = False
                         self.run()
-                    if event.key == pygame.K_c:
-                        merge_sort_axis_x(self.points.set_points)
-                            
-                        # RUN ALGORITHM CLOSEST PAIR OF POINTS,
-                        # PINTAR DE VERDE OS DOIS PONTOS E DESENHAR UMA LINHA ENTRE ELES,
-                        # PRINTAR NA TELA AS COORDENADAS DO PAR MAIS PROXIMO
-                        # msg: Closest Pair of Points = (532, 540) and (877, 544) / Distance = 1.4444
+                    if event.key == pygame.K_c and len(self.points.set_points) > 1 and not self.solved:
+                        # closest_pair = closest_pair_of_points(self.points.set_points)
+                        self.closest_pair = brute_force(self.points.set_points)
+                        print("ANSWER")
+                        print(self.closest_pair[0].pos)
+                        print(self.closest_pair[1].pos)
+                        
+                        self.founded()
+
                         self.solved = True
                 if not self.solved and event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
+                    # Debug
                     print(pos)
                     point = Point(pos, RED)
                     self.points.append_point(point)
