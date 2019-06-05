@@ -217,9 +217,6 @@ class Points():
         if ([point.pos_x, point.pos_y] not in self.set_points_positions):
             self.set_points.append(point)
             self.set_points_positions.append([point.pos_x, point.pos_y])
-        # DEBUG
-        for point in self.set_points:
-            print(point.pos)
 
     def render(self, background):
         """
@@ -329,10 +326,6 @@ class Game():
                         merge_sort_axis_x(self.points.set_points)
                         self.closest_pair = closest_pair_of_points_divide_and_conquer(self.points.set_points)
                         # self.closest_pair = closest_pair_of_points_brute_force(self.points.set_points)
-                        # Debug
-                        print("ANSWER")
-                        print(self.closest_pair[0].pos)
-                        print(self.closest_pair[1].pos)
 
                         self.founded()
                         self.solved = True
