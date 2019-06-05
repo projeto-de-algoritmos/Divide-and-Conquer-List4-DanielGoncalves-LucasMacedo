@@ -106,12 +106,11 @@ def merge_sort_axis_y(points):
             j += 1
             k += 1
 
-def brute_force(points):
+def closest_pair_of_points_brute_force(points):
     """
     Algorithm brute force to find closest pair of points.
     """
     min = sys.float_info.max
-    closest_pair = ()
     for i in range(0, len(points)):
         for j in range(i + 1, len(points)):
             if distance_two_points(points[i], points[j]) < min:
@@ -119,20 +118,70 @@ def brute_force(points):
                 closest_pair = (points[i], points[j])
     return closest_pair
 
-def closest_pair_of_points(points):
+def min_distance_strip(strip, closest_pair):
+    """
+    Calculate min distance in strip,
+    strip is a vector of points in strip and
+    closest_pair is current closest pair of points.
+    """
+
+    # Sort the vector of points by axis y
+    merge_sort_axis_y(strip)
+    i = 0
+    while i < len(strip):
+        j = i + 1
+        # Check the distance to the following points whose distance is less than closest pair
+        while j < len(strip) and (strip[j].pos_y - strip[i].pos_y) < distance_two_points(closest_pair[0], closest_pair[1]):
+            # If distance minor that current closest pair, replace the closest pair
+            if (distance_two_points(strip[i], strip[j]) < distance_two_points(closest_pair[0], closest_pair[1])):
+                closest_pair = (strip[i], strip[j])
+            j += 1
+        i += 1
+
+    # Return the closest pair of points between parameter and points of strip
+    return closest_pair
+
+def closest_pair_of_points_divide_and_conquer(points):
     """
     Algorithm divide and conquer closest pair of points.
     """
-    merge_sort_axis_x(points)
-    
+    if len(points) <= 3:
+        # Calculate by brute force when have less or equal three points
+        return closest_pair_of_points_brute_force(points)
+
     mid = len(points) // 2 # Finding the mid of the array
     L = points[:mid] # Dividing the array elements
     R = points[mid:] # into 2 halves
 
+    # Recursive call to left side
+    dl = closest_pair_of_points_divide_and_conquer(L)
+    # Recursive call to right side
+    dr = closest_pair_of_points_divide_and_conquer(R)
 
+    if distance_two_points(dl[0], dl[1]) <= distance_two_points(dr[0], dr[1]):
+        closest_pair = (dl[0], dl[1])
+    else:
+        closest_pair = (dr[0], dr[1])
 
-    # closest_pair = (point1, point2)
-    # return closest_pair
+    # Vector of points in strip
+    strip = []
+    # X axis value of central point
+    mid_x = points[mid].pos_x
+    i = 0
+    while i < len(points):
+        # Put on vector strip points between (mid_x + d) and (mid_x - d)
+        if abs(points[i].pos_x - mid_x) < distance_two_points(closest_pair[0], closest_pair[1]):
+            strip.append(points[i])
+        i += 1
+
+    # Calculate minimum distance in strip
+    mf = min_distance_strip(strip, closest_pair)
+    if distance_two_points(closest_pair[0], closest_pair[1]) > distance_two_points(mf[0], mf[1]):
+        closest_pair = (mf[0], mf[1])
+
+    # Return the closest pair of points
+    return closest_pair
+
 
 class Point():
     """
@@ -277,8 +326,9 @@ class Game():
                         self.solved = False
                         self.run()
                     if event.key == pygame.K_c and len(self.points.set_points) > 1 and not self.solved:
-                        # closest_pair = closest_pair_of_points(self.points.set_points)
-                        self.closest_pair = brute_force(self.points.set_points)
+                        merge_sort_axis_x(self.points.set_points)
+                        self.closest_pair = closest_pair_of_points_divide_and_conquer(self.points.set_points)
+                        # self.closest_pair = closest_pair_of_points_brute_force(self.points.set_points)
                         # Debug
                         print("ANSWER")
                         print(self.closest_pair[0].pos)
