@@ -27,7 +27,6 @@ def text_block(background, message, color, size, coordinate_x, coordinate_y):
     text = font.render(message, True, color)
     background.blit(text, [coordinate_x, coordinate_y])
 
-
 def distance_two_points(point_a, point_b):
     """
     Calculate distance of two points.
@@ -287,8 +286,8 @@ class Game():
 
         if self.solved:
             pygame.draw.line(self.background, GREEN, self.closest_pair[0].pos, self.closest_pair[1].pos)
-            text_block(self.background, "Closest Pair of Points " + str(self.closest_pair[0].pos) + " " + str(self.closest_pair[1].pos), WHITE, 25, 310, 30)
-            text_block(self.background, "Distance " + str(distance_two_points(self.closest_pair[0], self.closest_pair[1])), WHITE, 25, 360, 50)
+            text_block(self.background, "Closest Pair of Points " + str(self.closest_pair[0].pos) + " " + str(self.closest_pair[1].pos), WHITE, 25, 300, 30)
+            text_block(self.background, "Distance " + str(round(distance_two_points(self.closest_pair[0], self.closest_pair[1]), 4)), WHITE, 25, 390, 50)
         
         pygame.display.update()
 
