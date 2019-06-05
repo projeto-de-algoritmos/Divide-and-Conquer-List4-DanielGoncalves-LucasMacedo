@@ -14,4 +14,6 @@
 
 ## Execution
 
-> * ``` python3 closest_pair_points.py ```
+> * ```python3 closest_pair_points.py```
+
+![closestpairofpoints](gifs/closestpairofpoints.gif) <br>
