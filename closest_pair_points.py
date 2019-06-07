@@ -321,14 +321,16 @@ class Game():
                         self.start = False
                         self.solved = False
                         self.run()
-                    if event.key == pygame.K_c and len(self.points.set_points) > 1 and not self.solved:
+                    if event.key == pygame.K_c and len(self.points.set_points) > 1:
+                        if len(self.closest_pair) > 0:
+                            self.closest_pair[0].color = RED
+                            self.closest_pair[1].color = RED
                         merge_sort_axis_x(self.points.set_points)
                         self.closest_pair = closest_pair_of_points_divide_and_conquer(self.points.set_points)
                         # self.closest_pair = closest_pair_of_points_brute_force(self.points.set_points)
-
                         self.founded()
                         self.solved = True
-                if not self.solved and event.type == pygame.MOUSEBUTTONUP:
+                if event.type == pygame.MOUSEBUTTONUP:
                     pos = pygame.mouse.get_pos()
                     # Debug
                     print(pos)
